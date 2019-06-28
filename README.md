@@ -1,5 +1,9 @@
 # DatoramaPy
 
+* Getting API Token
+
+![api_token](https://i.imgur.com/pb9CMaD.png)
+
 * Example usage
 ```python
 from datorama import Datorama
