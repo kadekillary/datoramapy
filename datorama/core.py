@@ -8,8 +8,7 @@ from .exceptions import BadRequestError
 
 
 class Datorama:
-    """ Datorama base class
-    """
+    """Datorama base class"""
 
     def __init__(self, token: str):
         self.token: str = token
@@ -22,7 +21,8 @@ class Datorama:
 
         # Default URLs for Datorama API
         self._datorama_urls: Dict[str, str] = {
-            "query_api": "https://api.datorama.com/v1/query",
+            "query": "https://api.datorama.com/v1/query",
+            "query-batch": "https://api.datorama.com/v1/query-batch",
             "accounts": "https://api.datorama.com/v1/accounts",
             "worskpaces": "https://api.datorama.com/v1/workspaces",
             "data_streams": "https://api.datorama.com/v1/data-streams",
@@ -39,19 +39,19 @@ class Datorama:
         check_response(response)
         return content
 
-    def _dat_get_request(self, url_key):
+    def _dat_get_request(self, url_key: str):
         response = self._session.get(self._datorama_urls[url_key])
         return self._handle_response(response)
 
-    def _dat_put_request(self, url_key):
+    def _dat_put_request(self, url_key: str):
         response = self._session.put(self._datorama_urls[url_key])
         return self._handle_response(response)
 
-    def _dat_post_request(self, url_key, data=None):
+    def _dat_post_request(self, url_key: str, data=None):
         response = self._session.post(self._datorama_urls[url_key], data)
         return self._handle_response(response)
 
-    def _dat_delete_request(self, url_key):
+    def _dat_delete_request(self, url_key: str):
         response = self._session.delete(self._datorama_urls[url_key])
         return self._handle_response(response)
 
@@ -91,7 +91,14 @@ class Datorama:
             data returned from request to Query API
         """
         encoded_query = json.dumps(query)
-        response = self._dat_post_request("query_api", data=encoded_query)
+        response = self._dat_post_request("query", data=encoded_query)
+        return response
+
+    def data_stream_process(self, id: int, dates: dict):
+        encoded_query = json.dumps(dates)
+        response = self._dat_post_parameter_request(
+            "data_stream", id, data=encoded_query
+        )
         return response
 
     def workspaces(self, action: str, id: int) -> List[dict]:
@@ -120,7 +127,7 @@ class Datorama:
         """
         pass
 
-    def accounts(self, id: str = None) -> List[dict]:
+    def accounts(self, id: int = None) -> List[dict]:
         """
         The account API allows setup and management of new and existing accounts.
         """

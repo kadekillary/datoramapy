@@ -1,3 +1,8 @@
+import json
+
+from .exceptions import BadRequestError
+
+
 def to_json(response):
     """" Convert response to JSON """
     return json.loads(response.content.decode("utf-8"))
